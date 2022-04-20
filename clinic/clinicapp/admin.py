@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.template.response import TemplateResponse
 from django.utils.html import mark_safe
-from .models import medicine, receipt_medicine, receipt_medicine_detail, category_medicine
+from .models import User, medicine, receipt_medicine, receipt_medicine_detail, category_medicine, patient, bill, examination_schedule
 from django import forms
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django.urls import path
@@ -19,10 +19,6 @@ class receipt_medicine_Form(forms.ModelForm):
 
 class receipt_medicine_Admin(admin.ModelAdmin):
     form = receipt_medicine_Form
-    # class Media:
-    #     css = {
-    #         'all': ('/static/css/donthuoc.css',)
-    #     }
 
 
 class medicine_Form(forms.ModelForm):
@@ -48,36 +44,11 @@ class receipt_medicine_detail_Form(forms.ModelForm):
 class receipt_medicine_detail_Admin(admin.ModelAdmin):
     form = receipt_medicine_detail_Form
 
-#
-# class ThuocAdmin(admin.ModelAdmin):
-#     class Media:
-#         css = {
-#             'all': ('/static/css/main.css',)
-#         }
-#     list_display = ["id","tenThuoc","giaTien","created_date","updated_date"]
-#     search_fields = ["tenThuoc","giaTien"]
-#     list_filter = ["tenThuoc"]
-#     readonly_fields = ["avatar"]
-#
-#     def avatar(self,thuoc):
-#         return mark_safe("<img src='/static/{img_url}' alt='{alt}' width='120px' />".format(img_url=thuoc.image.name,alt = thuoc.tenThuoc))
-#
-#
-# class DanhMucThuocAdmin(admin.ModelAdmin):
-#     list_display = ["id","tenDanhMuc"]
-#     search_fields = ["tenDanhMuc","thuoc"]
-#     list_filter = ["tenDanhMuc"]
-#
-#
-# class DonThuocInline(admin.StackedInline):
-#     model = DonThuoc
-#     pk_name = 'hoadon'
-#
-# class HoaDonAdmin(admin.ModelAdmin):
-#     inlines = [DonThuocInline,]
-#
-#
-#
+
+class billAdmin(admin.ModelAdmin):
+    list_display = ['amount_of_money']
+
+
 # class MedicalAppAdminSite(admin.AdminSite):
 #     site_header = 'HE THONG DANG KY KHAM CHUA BENH'
 #
@@ -102,10 +73,11 @@ class receipt_medicine_detail_Admin(admin.ModelAdmin):
 admin.site.register(medicine,medicine_Admin)
 admin.site.register(receipt_medicine, receipt_medicine_Admin)
 admin.site.register(receipt_medicine_detail, receipt_medicine_detail_Admin)
-# admin.site.register(user)
+admin.site.register(User)
 admin.site.register(category_medicine)
-# admin.site.register(HoaDon,HoaDonAdmin)
-# admin.site.register(LichKham)
+admin.site.register(patient)
+admin.site.register(bill)
+admin.site.register(examination_schedule)
 
 # admin_site.register(Thuoc,ThuocAdmin)
 # admin_site.register(DonThuoc)

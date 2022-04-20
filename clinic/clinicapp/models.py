@@ -13,30 +13,34 @@ class ModelBase(models.Model):
     update_date = models.DateField(auto_now_add=True)
 
     class Meta:
-        abstract = True #Tạo lớp trường tượng
+        abstract = True
 
 
 class receipt_medicine(ModelBase):
     symptom = RichTextField(max_length=255)
     diagnostic = RichTextField(max_length=255)
     medicines = models.ManyToManyField('medicine', through='receipt_medicine_detail', related_name='receipt_madicine', blank=True)
-    # ngayKham = models.DateTimeField(auto_now_add=True)
-    # bacsi = models.ForeignKey(User, on_delete=models.SET_NULL,null=True)
-    # hoadon = models.ForeignKey('HoaDon', on_delete=models.SET_NULL,null=True,related_name="donthuoc")
-    # danhmuc = models.ManyToManyField('DanhMucThuocUong') # 1 đơn thuốc có thể có nhiều danh mục và
-    #                                                 # 1 danh mục có thể thuộc nhiều đơn thuốc khác nhau
 
     def __str__(self):
         return self.id
 
 
-# class examination_schedule(ModelBase):
-#     date_examination = models.DateTimeField()
-    # benhnhan = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
+class examination_schedule(ModelBase):
+    date_examination = models.DateTimeField()
+    examination_schedule_patient = models.ForeignKey('patient', related_name='examination_schedu', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.date_examination
 
 
-# class patient(ModelBase):
-#     pass
+class patient(ModelBase):
+    user = models.ForeignKey(User, related_name='patient', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    phone = models.IntegerField()
+
+
+    def __str__(self):
+        return self.name
 
 
 class medicine(ModelBase):
@@ -65,33 +69,11 @@ class category_medicine(ModelBase):
     name = models.CharField(max_length=255)
     medicine = models.ManyToManyField(medicine, related_name='category_medicine', blank=True)
 
+    def __str__(self):
+        return self.name
 
-# class bill(ModelBase):
-#     amount_of_money = models.CharField(max_length=255)
 
+class bill(ModelBase):
+    bill_receipt_medicine = models.ForeignKey(receipt_medicine, on_delete=models.CASCADE)
+    amount_of_money = models.CharField(max_length=255)
 
-# class DanhMucThuocUong(ModelBase):
-#     tenDanhMuc = models.CharField(max_length=255, unique=True)
-#     thuoc = models.ManyToManyField('Thuoc')
-#
-#     def __str__(self):
-#         return self.tenDanhMuc
-#
-#
-# class Thuoc(ModelBase):
-#     tenThuoc =models.CharField(max_length=100, null=False, unique=True)
-#     giaTien = models.CharField(max_length=100, null=False)
-#     congDung = RichTextField(max_length=255)
-#     image = models.ImageField(upload_to='medicines/%Y/%m',default=None)
-#
-#
-#     def __str__(self):
-#         return self.tenThuoc
-#
-#
-# class HoaDon(ModelBase):
-#     chiPhiRaToa = models.IntegerField()
-#     tienKham = models.IntegerField()
-#
-#     def __str__(self):
-#         return self.tienKham

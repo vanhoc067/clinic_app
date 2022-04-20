@@ -13,5 +13,5 @@ from . import views
 urlpatterns = [
     # path('', views.index, name='course_index'),
     # path('', include(router.urls)),
-    path('test/', views.index, name='clinic_index')
+    path('', views.index, name='clinic_index')
 ]
