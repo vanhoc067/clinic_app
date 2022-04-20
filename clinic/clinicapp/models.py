@@ -57,6 +57,9 @@ class receipt_medicine_detail(ModelBase):
     quantity = models.IntegerField()
     use = RichTextField(max_length=255)
 
+    def __str__(self):
+        return self.id
+
 
 class category_medicine(ModelBase):
     name = models.CharField(max_length=255)
