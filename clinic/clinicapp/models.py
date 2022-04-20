@@ -26,6 +26,9 @@ class receipt_medicine(ModelBase):
     # danhmuc = models.ManyToManyField('DanhMucThuocUong') # 1 đơn thuốc có thể có nhiều danh mục và
     #                                                 # 1 danh mục có thể thuộc nhiều đơn thuốc khác nhau
 
+    def __str__(self):
+        return self.id
+
 
 # class examination_schedule(ModelBase):
 #     date_examination = models.DateTimeField()
