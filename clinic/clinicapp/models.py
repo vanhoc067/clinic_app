@@ -1,10 +1,16 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from ckeditor.fields import RichTextField
+from enum import Enum
 
 
 class User(AbstractUser):
     avatar = models.ImageField(null=True, blank=True, upload_to='user/%Y/%m')
+
+
+class gender(models.TextChoices):
+    male = 'male'
+    female = 'female'
 
 
 class ModelBase(models.Model):
@@ -20,22 +26,26 @@ class receipt_medicine(ModelBase):
     symptom = RichTextField(max_length=255)
     diagnostic = RichTextField(max_length=255)
     medicines = models.ManyToManyField('medicine', through='receipt_medicine_detail', related_name='receipt_madicine', blank=True)
+    patient = models.ForeignKey('patient', related_name='receipt_medicine', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 
 class examination_schedule(ModelBase):
     date_examination = models.DateTimeField()
     examination_schedule_patient = models.ForeignKey('patient', related_name='examination_schedu', on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.date_examination
 
 
 class patient(ModelBase):
     user = models.ForeignKey(User, related_name='patient', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+    gender = gender = models.CharField(
+        max_length=50,
+        choices=gender.choices,
+        default=gender.male,
+    )
     phone = models.IntegerField()
 
 
@@ -62,7 +72,7 @@ class receipt_medicine_detail(ModelBase):
     use = RichTextField(max_length=255)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 
 class category_medicine(ModelBase):
