@@ -26,6 +26,10 @@ class receipt_medicine_Form(forms.ModelForm):
 class receipt_medicine_Admin(admin.ModelAdmin):
     form = receipt_medicine_Form
 
+    list_display = ['patient', 'id', 'symptom', 'diagnostic', 'medicines']
+    list_filter = ['id', 'patient']
+    search_fields = ['id']
+
 
 class medicine_Form(forms.ModelForm):
     description = forms.CharField(widget=CKEditorUploadingWidget)
@@ -37,10 +41,17 @@ class medicine_Form(forms.ModelForm):
 
 class medicine_Admin(admin.ModelAdmin):
     form = medicine_Form
+    readonly_fields = ['image_view']
 
     list_display = ['id', 'name', 'quantity', 'price', 'description']
     list_filter = ['id', 'name']
     search_fields = ['name']
+
+    def image_view(self, Lesson):
+        if Lesson:
+            return mark_safe(
+                '<img src="/static/{url}" width="120" />' \
+                    .format(url=Lesson.image.name))
 
 
 class receipt_medicine_detail_Form(forms.ModelForm):
@@ -87,32 +98,21 @@ class bill_Admin(admin.ModelAdmin):
     search_fields = ['id']
 
 
-# class ClinicAppAdminSite(admin.AdminSite):
-#     site_header = 'HE THONG DANG KY KHAM CHUA BENH'
-#
-#     def get_urls(self):
-#         return [
-#             path('clinic-stats/', self.medical_stats)
-#         ] + super().get_urls()
-#
-#     def medical_stats(self,request):
-#         medicine_count = medicine.objects.count()
-#
-#         return TemplateResponse(request,'admin/medical-stats.html',{
-#             'medicine_count':medicine_count
-#         })
-#
-#
-# admin_site = ClinicAppAdminSite(name="My Clinic")
+class ClinicAppAdminSite(admin.AdminSite):
+    site_header = 'HE THONG DANG KY KHAM CHUA BENH'
 
 
-admin.site.register(medicine, medicine_Admin)
-admin.site.register(receipt_medicine, receipt_medicine_Admin)
-admin.site.register(receipt_medicine_detail, receipt_medicine_detail_Admin)
-admin.site.register(User)
-admin.site.register(category_medicine, category_medicine_Admin)
-admin.site.register(patient, patientAdmin)
-admin.site.register(bill, bill_Admin)
-admin.site.register(examination_schedule, examination_schedule_Admin)
+
+admin_site = ClinicAppAdminSite(name="My Clinic")
+
+
+admin_site.register(medicine, medicine_Admin)
+admin_site.register(receipt_medicine, receipt_medicine_Admin)
+admin_site.register(receipt_medicine_detail, receipt_medicine_detail_Admin)
+admin_site.register(User)
+admin_site.register(category_medicine, category_medicine_Admin)
+admin_site.register(patient, patientAdmin)
+admin_site.register(bill, bill_Admin)
+admin_site.register(examination_schedule, examination_schedule_Admin)
 
 

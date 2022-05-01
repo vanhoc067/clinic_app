@@ -29,7 +29,7 @@ class receipt_medicine(ModelBase):
     patient = models.ForeignKey('patient', related_name='receipt_medicine', on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.id)
+        return str(self.patient)
 
 
 class examination_schedule(ModelBase):
@@ -66,7 +66,7 @@ class medicine(ModelBase):
 
 
 class receipt_medicine_detail(ModelBase):
-    receipt_medicine = models.ForeignKey(receipt_medicine, on_delete=models.CASCADE)
+    receipt_medicine = models.ForeignKey(receipt_medicine, related_name='detail', on_delete=models.CASCADE)
     medicine = models.ForeignKey(medicine, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     use = RichTextField(max_length=255)
@@ -86,4 +86,34 @@ class category_medicine(ModelBase):
 class bill(ModelBase):
     bill_receipt_medicine = models.ForeignKey(receipt_medicine, on_delete=models.CASCADE)
     amount_of_money = models.CharField(max_length=255)
+    
+    
+class Comment(ModelBase):
+    content = models.TextField()
+    medicine = models.ForeignKey(medicine,   related_name='comment', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.content
+
+
+class ActionBase(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    medicine = models.ForeignKey(medicine, on_delete=models.CASCADE)
+
+    class Meta:
+        abstract = True
+        unique_together = ('user', 'medicine') #chỉ lưu mỗi người 1 lần, lần sau thì đè lên lần trc
+
+
+class Like(ActionBase):
+    active = models.BooleanField(default=False)
+
+
+class Rating(ActionBase):
+    rate = models.SmallIntegerField(default=0)
+
+
+
+
 

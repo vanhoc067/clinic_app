@@ -38,6 +38,11 @@ INSTALLED_APPS = [
     'clinicapp.apps.ClinicappConfig',
     'ckeditor',
     'ckeditor_uploader',
+    'rest_framework',
+    'drf_yasg',
+    'oauth2_provider',
+    'debug_toolbar',
+
 ]
 
 MIDDLEWARE = [
@@ -48,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'clinic.urls'
@@ -131,3 +137,18 @@ AUTH_USER_MODEL = 'clinicapp.User'
 CKEDITOR_UPLOAD_PATH = "images/lessons/"
 
 MEDIA_ROOT = '%s/clinicapp/static/' % BASE_DIR
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 2,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    )
+}
+
+STATIC_URL = '/static/'
+
+INTERNAL_IPS = [
+    '127.0.0.1'
+]
