@@ -84,7 +84,7 @@ class category_medicine(ModelBase):
 
 
 class bill(ModelBase):
-    bill_receipt_medicine = models.ForeignKey(receipt_medicine, on_delete=models.CASCADE)
+    bill_receipt_medicine = models.ForeignKey(receipt_medicine,related_name='bills', on_delete=models.CASCADE)
     amount_of_money = models.CharField(max_length=255)
     
     

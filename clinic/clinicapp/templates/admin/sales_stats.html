@@ -1,0 +1,98 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+         <h1 style="text-align:center; font-size:40px; color:blue">Thống kê doanh thu</h1>
+         <div style="text-align:center;">
+            <form method="get">
+                <input type="date" name="month" value="{{ request.args.get('month') if request.args.get('month')
+                else [last_d_m_y.get('month'), last_d_m_y.get('date'), last_d_m_y.get('year')]|join('-')}}">
+                <input type="submit">
+            </form>
+        </div>
+        <br><br>
+        <div class="row" style="display:flex; width:90%" >
+            <div class="col-md-6 col-xs-12" style="width:100%">
+                <table class="table">
+                    <tr>
+                        <th>Mã số</th>
+                        <th>Bệnh nhân</th>
+                        <th>ngày xuất hóa đơn</th>
+                        <th>Thành tiền</th>
+                        <th>trạng thái</th>
+                    </tr>
+                    {% if stats %}
+                        {% for s in stats %}
+                        <tr>
+                            <td>{{s.0}}</td>
+                            <td>{{s.1}}</td>
+                            <td>{{s.2}}</td>
+                            <td>{{s.3}}</td>
+                            <td>
+                                {% if s.4 == True%}
+                                    <i>đã thanh toán</i>
+                                {% else %}
+                                    <i>chưa thanh toán</i>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% endif %}
+                </table>
+                <br><br>
+                <strong><i>Doanh thu: {{money}}</i></strong>
+            </div>
+            <div class="col-md-6 col-xs-12" style="width:80%">
+                <canvas id="myBillStatChart"></canvas>
+            </div>
+        </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        window.onload = function() {
+            let labels = [], data = []
+            {% if money %}
+                {% for s in stats %}
+                    labels.push('{{s.2}}')
+                    data.push({{s.3}})
+                {% endfor %}
+            {% else %}
+                alert("Không tìm thấy dữ liệu");
+            {% endif %}
+
+            const ctx = document.getElementById('myBillStatChart').getContext('2d');
+            const myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Thong ke doanh thu theo ngay',
+                        data: data,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+{% endblock %}

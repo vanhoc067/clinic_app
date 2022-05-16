@@ -2,11 +2,13 @@ from django.http import HttpResponse
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
-from .models import patient, examination_schedule, receipt_medicine, medicine, receipt_medicine_detail, category_medicine, bill, Comment, User
+from .models import patient, examination_schedule, receipt_medicine, medicine, receipt_medicine_detail, category_medicine, bill, Comment, User, Like, Rating
 from .serializers import PatientSerializer, ExaminationScheduleSerializer, ReceiptMedicineSerializer,\
     MedicineSerializer, ReceiptMedicineDetailSerializer, CategoryMedicineSerializer, BillSerializer,\
     CommentSerializer, CreateCommentsSerializer, UserSerializer, MedicineDetailSerializer
-
+from rest_framework.parsers import MultiPartParser
+from django.conf import settings
+from rest_framework.views import APIView
 
 def index(request):
     return HttpResponse("e-Clinic App")
@@ -150,3 +152,20 @@ class CommentViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.filter(is_active=True)
     serializer_class = UserSerializer
+    parser_classes = [MultiPartParser]
+
+    def get_permissions(self):
+        if self.action == 'current_user':
+            return [permissions.IsAuthenticated()]
+
+        return [permissions.AllowAny()]
+
+    @action(methods=['get'], url_path="current-user", detail=False)
+    def current_user(self, request):
+        return Response(self.serializer_class(request.user, context={'request': request}).data,
+                        status=status.HTTP_200_OK)
+
+
+class AuthInfo(APIView):
+    def get(self, request):
+        return Response(settings.OAUTH2_INFO, status=status.HTTP_200_OK)

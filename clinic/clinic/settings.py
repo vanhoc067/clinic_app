@@ -29,6 +29,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'admin_interface',
+    'colorfield',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -139,12 +141,13 @@ CKEDITOR_UPLOAD_PATH = "images/lessons/"
 MEDIA_ROOT = '%s/clinicapp/static/' % BASE_DIR
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    ),
     'DEFAULT_PAGINATION_CLASS':
         'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 2,
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-    )
+
 }
 
 STATIC_URL = '/static/'
@@ -152,3 +155,8 @@ STATIC_URL = '/static/'
 INTERNAL_IPS = [
     '127.0.0.1'
 ]
+CORS_ALLOW_ALL_ORIGINS = True
+
+OAUTH2_PROVIDER = {
+    'OAUTH2_BACKEND_CLASS': 'oauth2_provider.oauth2_backends.JSONOAuthLibCore'
+}
