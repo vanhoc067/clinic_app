@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers, pagination
-from .models import patient, examination_schedule, receipt_medicine, medicine, receipt_medicine_detail, category_medicine, bill, Comment, User
+from .models import patient, examination_schedule, receipt_medicine, medicine, receipt_medicine_detail, category_medicine, bill, Comment, User, regulation
 
 class PatientSerializer(ModelSerializer):
     class Meta:
@@ -37,6 +37,7 @@ class MedicineSerializer(ModelSerializer):
 
 class MedicineDetailSerializer(MedicineSerializer):
     like = serializers.SerializerMethodField()
+    rating = serializers.SerializerMethodField()
 
     def get_like(self, obj):
         request = self.context['request']
@@ -44,9 +45,15 @@ class MedicineDetailSerializer(MedicineSerializer):
             return obj.like_set.filter(user=request.user,
                                        active=True).exists()  # phương thức exists trả về đối tượng true/false
 
+    def get_rating(self, obj):
+        request = self.context['request']
+        if request.user.is_authenticated:
+            return obj.rating_set.filter(user=request.user,
+                                       active=True).exists()  # phương thức exists trả về đối tượng true/false
+
     class Meta:
         model = MedicineSerializer.Meta.model
-        fields = MedicineSerializer.Meta.fields + ['description', 'like']
+        fields = MedicineSerializer.Meta.fields + ['description', 'like', 'rating']
 
 
 class MedicinCateSerializer(ModelSerializer):
@@ -123,3 +130,9 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         exclude = ['active']
+
+
+class RegulationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = regulation
+        exclude = ['maximum', 'minimum', 'active']

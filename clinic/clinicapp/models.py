@@ -33,6 +33,7 @@ class receipt_medicine(ModelBase):
 
 
 class examination_schedule(ModelBase):
+    authentication = models.BooleanField(default=False)
     date_examination = models.DateTimeField()
     examination_schedule_patient = models.ForeignKey('patient', related_name='examination_schedu', on_delete=models.CASCADE)
 
@@ -112,6 +113,12 @@ class Like(ActionBase):
 
 class Rating(ActionBase):
     rate = models.SmallIntegerField(default=0)
+
+
+class regulation(ModelBase):
+    maximum = models.IntegerField(default=100)
+    minimum = models.IntegerField(default=0)
+
 
 
 

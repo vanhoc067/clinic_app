@@ -13,6 +13,7 @@ router.register(prefix='category_medicine', viewset=views.CategoryMedicineViewSe
 router.register(prefix='bill', viewset=views.BillViewSet, basename='bill')
 router.register(prefix='comments', viewset=views.CommentViewSet, basename='comment')
 router.register(prefix='users', viewset=views.UserViewSet, basename='user')
+router.register(prefix='regulation', viewset=views.RegulationViewSet, basename='regulation')
 
 urlpatterns = [
     path('', include(router.urls)),

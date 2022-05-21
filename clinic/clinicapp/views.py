@@ -2,10 +2,10 @@ from django.http import HttpResponse
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
-from .models import patient, examination_schedule, receipt_medicine, medicine, receipt_medicine_detail, category_medicine, bill, Comment, User, Like, Rating
+from .models import patient, examination_schedule, receipt_medicine, medicine, receipt_medicine_detail, category_medicine, bill, Comment, User, Like, Rating, regulation
 from .serializers import PatientSerializer, ExaminationScheduleSerializer, ReceiptMedicineSerializer,\
     MedicineSerializer, ReceiptMedicineDetailSerializer, CategoryMedicineSerializer, BillSerializer,\
-    CommentSerializer, CreateCommentsSerializer, UserSerializer, MedicineDetailSerializer
+    CommentSerializer, CreateCommentsSerializer, UserSerializer, MedicineDetailSerializer, RegulationSerializer
 from rest_framework.parsers import MultiPartParser
 from django.conf import settings
 from rest_framework.views import APIView
@@ -133,6 +133,10 @@ class BillViewSet(viewsets.ModelViewSet):
     queryset = bill.objects.filter(active=True)
     serializer_class = BillSerializer
     # permission_classes = [permissions.IsAuthenticated]
+
+class RegulationViewSet(viewsets.ModelViewSet):
+    queryset = regulation.objects.filter(active=True)
+    serializer_class = RegulationSerializer
 
 
 class CommentViewSet(viewsets.ModelViewSet):

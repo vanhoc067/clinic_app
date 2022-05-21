@@ -1,8 +1,9 @@
 from django.contrib import admin
 from django.template.response import TemplateResponse
+from django.views import View
 from django.utils.html import mark_safe
 from .models import User, medicine, receipt_medicine, receipt_medicine_detail, category_medicine, patient, bill, \
-    examination_schedule
+    examination_schedule, regulation
 from django import forms
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django.urls import path
@@ -56,6 +57,7 @@ class medicine_Admin(admin.ModelAdmin):
                     .format(url=Lesson.image.name))
 
 
+
 class receipt_medicine_detail_Form(forms.ModelForm):
     use = forms.CharField(widget=CKEditorUploadingWidget)
 
@@ -83,7 +85,7 @@ class receipt_medicine_Admin(admin.ModelAdmin):
 
 
 class examination_schedule_Admin(admin.ModelAdmin):
-    list_display = ['examination_schedule_patient', 'date_examination']
+    list_display = ['examination_schedule_patient', 'date_examination', 'authentication']
     list_filter = ['examination_schedule_patient', 'id']
     search_fields = ['id']
 
@@ -98,6 +100,10 @@ class bill_Admin(admin.ModelAdmin):
     list_display = ['bill_receipt_medicine', 'amount_of_money']
     list_filter = ['bill_receipt_medicine', 'id']
     search_fields = ['id']
+
+
+class regulation_Admin(admin.ModelAdmin):
+    list_display = ['maximum', 'minimum', 'active']
 
 
 class ClinicAppAdminSite(admin.AdminSite):
@@ -136,6 +142,7 @@ class ClinicAppAdminSite(admin.AdminSite):
 
 
     def patient_stats(self, request, month=None, year=None, date=None):
+        current_user = request.user
         patients = patient.objects.raw(
                      'SELECT id, created_date, COUNT(id) AS count FROM clinicapp_patient GROUP BY created_date'
                 )
@@ -158,6 +165,8 @@ class ClinicAppAdminSite(admin.AdminSite):
             'patients': patients,
         })
 
+    def is_accessible(self):
+        return current_user.is_authenticated
 
 admin_site = ClinicAppAdminSite(name="My Clinic")
 
@@ -170,5 +179,19 @@ admin_site.register(category_medicine, category_medicine_Admin)
 admin_site.register(patient, patientAdmin)
 admin_site.register(bill, bill_Admin)
 admin_site.register(examination_schedule, examination_schedule_Admin)
+admin_site.register(regulation, regulation_Admin)
+
+
+admin.site.register(medicine, medicine_Admin)
+admin.site.register(receipt_medicine, receipt_medicine_Admin)
+admin.site.register(receipt_medicine_detail, receipt_medicine_detail_Admin)
+admin.site.register(User)
+admin.site.register(category_medicine, category_medicine_Admin)
+admin.site.register(patient, patientAdmin)
+admin.site.register(bill, bill_Admin)
+admin.site.register(examination_schedule, examination_schedule_Admin)
+admin.site.register(regulation, regulation_Admin)
+
+
 
 
